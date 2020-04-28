@@ -3,7 +3,7 @@ CFLAGS=-Wall -pthread
 
 RUN_DIR=run/
 
-PRJ_NOM=Desactivador-XScreensaver
+PRJ_NOM=desactivador-xscreensaver
 SOURCE=main.c
 TARGET=${RUN_DIR}${PRJ_NOM}
 
