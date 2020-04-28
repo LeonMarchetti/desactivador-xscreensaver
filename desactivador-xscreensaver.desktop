@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Desactivador XScreensaver
+Exec=/home/leonardo/bin/desactivador-xscreensaver
+Icon=xscreensaver
+Terminal=false
+Type=Application
+Version=1.0
