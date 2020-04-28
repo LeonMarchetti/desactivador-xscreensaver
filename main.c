@@ -1,7 +1,11 @@
 #include <gtk/gtk.h>
 #include <pthread.h>
-#include <stdlib.h>
 
+
+char* img_iconos[2] = {
+    "icons/play.png",
+    "icons/stop.png"
+};
 
 enum Icon {
     Play = 0,
@@ -49,16 +53,15 @@ static void onButtonRelease(GtkWidget* widget, gpointer data) {
         case Play:
             g_print("Salvapantallas activado\n");
             icon = Stop;
-            gtk_status_icon_set_from_file(tray_icon, "icons/stop.png");
             pthread_cancel(id_hilo);
             break;
         case Stop:
             g_print("Salvapantallas desactivado\n");
             icon = Play;
-            gtk_status_icon_set_from_file(tray_icon, "icons/play.png");
             pthread_create(&id_hilo, NULL, callback, NULL);
             break;
     }
+    gtk_status_icon_set_from_file(tray_icon, img_iconos[icon]);
 }
 
 static gboolean onPopupMenu(GtkWidget* widget, GdkEvent* event, gpointer data) {
@@ -67,11 +70,11 @@ static gboolean onPopupMenu(GtkWidget* widget, GdkEvent* event, gpointer data) {
 }
 
 static void activate(GtkApplication* app, gpointer user_data) {
-    g_print("activate\n");
+    g_print("Activando ventana\n");
     window = gtk_application_window_new(app);
 
     // Inicializar ícono en la bandeja:
-    tray_icon = gtk_status_icon_new_from_file("icons/stop.png");
+    tray_icon = gtk_status_icon_new_from_file(img_iconos[icon]);
 
     // Eventos:
     g_signal_connect(tray_icon, "popup-menu", G_CALLBACK(onPopupMenu), NULL);
