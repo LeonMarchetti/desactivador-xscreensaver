@@ -16,12 +16,16 @@ XScreenSaver fue desarrollado por Jamie Zawinski http://www.jwz.org/xscreensaver
 
 ## Librerías utilizadas:
 
-* gtk
+* gtk3
 * pthread
 
 ## Instalación
 
 Después de clonar, entrar en el directorio y ejecutar `make`, para
 
-[Play]: /icons/play-small.png
-[Stop]: /icons/stop-small.png
+### Atajo de escritorio
+
+Copiar o hacer un enlace simbólico del archivo `desactivador-xscreensaver.desktop`.
+
+[Play]: /icons/media-playback-start-symbolic.svg
+[Stop]: /icons/media-playback-pause-symbolic.svg

@@ -3,8 +3,8 @@
 
 
 char* img_iconos[2] = {
-    "icons/play.png",
-    "icons/stop.png"
+    "media-playback-start-symbolic",
+    "media-playback-pause-symbolic"
 };
 
 enum Icon {
@@ -39,6 +39,11 @@ int main (int argc, char **argv) {
     return status;
 }
 
+/**
+ * Función que ejecuta el hilo. Ejecuta el comando `xscreensaver-command
+ * -deactivate` cada 30 segundos para decirle a xscreensaver que pretenda que
+ * hubo actividad y no active el salvapantallas.
+ */
 void* callback(void* vargp) {
     while (1) {
         system("xscreensaver-command -deactivate >/dev/null 2>&1");
@@ -48,6 +53,11 @@ void* callback(void* vargp) {
     return NULL;
 }
 
+/**
+ * Función que se ejecuta al soltar el botón izquierdo del mouse sobre el
+ * ícono. Alterna el estado del ícono entre ejecutando y detenido. Además
+ * crea o cancela el hilo que envía la señal a xscreensaver.
+ */
 static void onButtonRelease(GtkWidget* widget, gpointer data) {
     switch (icon) {
         case Play:
@@ -61,20 +71,27 @@ static void onButtonRelease(GtkWidget* widget, gpointer data) {
             pthread_create(&id_hilo, NULL, callback, NULL);
             break;
     }
-    gtk_status_icon_set_from_file(tray_icon, img_iconos[icon]);
+    gtk_status_icon_set_from_icon_name(tray_icon, img_iconos[icon]);
 }
 
+/**
+ * Función que se ejecuta al presionar el botón derecho del mouse.
+ */
 static gboolean onPopupMenu(GtkWidget* widget, GdkEvent* event, gpointer data) {
     g_print("Terminado\n");
     return FALSE;
 }
 
+/**
+ * Función que se ejecuta cuando se activa la aplicación. Inicializa el ícono y
+ * conecta los eventos de los clicks.
+ */
 static void activate(GtkApplication* app, gpointer user_data) {
     g_print("Activando ventana\n");
     window = gtk_application_window_new(app);
 
     // Inicializar ícono en la bandeja:
-    tray_icon = gtk_status_icon_new_from_file(img_iconos[icon]);
+    tray_icon = gtk_status_icon_new_from_icon_name(img_iconos[icon]);
 
     // Eventos:
     g_signal_connect(tray_icon, "popup-menu", G_CALLBACK(onPopupMenu), NULL);
