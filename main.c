@@ -7,16 +7,21 @@ char* img_iconos[2] = {
     "media-playback-pause-symbolic"
 };
 
+char* tooltips[2] = {
+    "Iniciar salvapantallas",
+    "Detener salvapantallas"
+};
+
 enum Icon {
     Play = 0,
     Stop
 };
 
+
 GtkWidget* window;
 GtkStatusIcon* tray_icon;
-enum Icon icon;
+enum Icon icono;
 pthread_t id_hilo;
-
 
 void* callback(void* vargp);
 static void onButtonRelease(GtkWidget* widget, gpointer data);
@@ -28,7 +33,7 @@ int main (int argc, char **argv) {
     GtkApplication* app;
     int status;
 
-    icon = Stop;
+    icono = Stop;
 
     app = gtk_application_new("org.gtk.example", G_APPLICATION_FLAGS_NONE);
     g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
@@ -59,19 +64,20 @@ void* callback(void* vargp) {
  * crea o cancela el hilo que envía la señal a xscreensaver.
  */
 static void onButtonRelease(GtkWidget* widget, gpointer data) {
-    switch (icon) {
+    switch (icono) {
         case Play:
             g_print("Salvapantallas activado\n");
-            icon = Stop;
+            icono = Stop;
             pthread_cancel(id_hilo);
             break;
         case Stop:
             g_print("Salvapantallas desactivado\n");
-            icon = Play;
+            icono = Play;
             pthread_create(&id_hilo, NULL, callback, NULL);
             break;
     }
-    gtk_status_icon_set_from_icon_name(tray_icon, img_iconos[icon]);
+    gtk_status_icon_set_from_icon_name(tray_icon, img_iconos[icono]);
+    gtk_status_icon_set_tooltip_text(tray_icon, tooltips[icono]);
 }
 
 /**
@@ -91,7 +97,7 @@ static void activate(GtkApplication* app, gpointer user_data) {
     window = gtk_application_window_new(app);
 
     // Inicializar ícono en la bandeja:
-    tray_icon = gtk_status_icon_new_from_icon_name(img_iconos[icon]);
+    tray_icon = gtk_status_icon_new_from_icon_name(img_iconos[icono]);
 
     // Eventos:
     g_signal_connect(tray_icon, "popup-menu", G_CALLBACK(onPopupMenu), NULL);
@@ -100,5 +106,5 @@ static void activate(GtkApplication* app, gpointer user_data) {
 
     // Mostrar ícono:
     gtk_status_icon_set_visible(tray_icon, TRUE);
-    gtk_status_icon_set_tooltip_text(tray_icon, "Detener");
+    gtk_status_icon_set_tooltip_text(tray_icon, tooltips[icono]);
 }
