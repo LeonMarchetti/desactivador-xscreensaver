@@ -3,8 +3,8 @@
 
 
 char* img_iconos[2] = {
-    "media-playback-start-symbolic",
-    "media-playback-pause-symbolic"
+    "media-play",
+    "media-pause"
 };
 
 char* tooltips[2] = {
